@@ -10,6 +10,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -43,24 +44,32 @@ public class TodoController {
         return ResponseEntity.ok(new TodoResponse(todoEntity));
     }
 
-    @GetMapping
+    @GetMapping("/")
     public ResponseEntity<List<TodoResponse>> readAll(){
+        List<TodoEntity> list =this.todoService.searchAll();
+        List<TodoResponse> responses = list.stream().map(TodoResponse::new).collect(Collectors.toList());
 
-        return null;
+        return ResponseEntity.ok(responses);
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<TodoResponse> update(){
-        return null;
+    public ResponseEntity<TodoResponse> update(@PathVariable Long id, @RequestBody TodoRequest request)
+    {
+        TodoEntity result = this.todoService.updateById(id, request);
+        return ResponseEntity.ok(new TodoResponse(result));
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> delete(){
-        return null;
+    public ResponseEntity<?> delete(@PathVariable Long id)
+    {
+        this.todoService.deleteById(id);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping
-    public ResponseEntity<?> deleteAll(){
-        return null;
+    public ResponseEntity<?> deleteAll()
+    {
+        this.todoService.deleteAll();
+        return ResponseEntity.ok().build();
     }
 }
