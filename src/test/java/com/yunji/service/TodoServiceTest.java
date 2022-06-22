@@ -1,6 +1,6 @@
 package com.yunji.service;
 
-import com.yunji.model.TodoEntity;
+import com.yunji.model.TodoModel;
 import com.yunji.model.TodoRequest;
 import com.yunji.repository.TodoRepository;
 import org.junit.jupiter.api.Test;
@@ -30,13 +30,13 @@ class TodoServiceTest {
 
     @Test
     void add() {
-        when(this.todoRepository.save(any(TodoEntity.class)))
+        when(this.todoRepository.save(any(TodoModel.class)))
                 .then(AdditionalAnswers.returnsFirstArg());
 
         TodoRequest expected =  new TodoRequest();
         expected.setTitle("test title");
 
-        TodoEntity actual = this.todoService.add(expected);
+        TodoModel actual = this.todoService.add(expected);
 
         assertEquals(expected.getTitle(),actual.getTitle());
 
@@ -44,18 +44,18 @@ class TodoServiceTest {
 
     @Test
     void searchById() {
-        TodoEntity entity = new TodoEntity();
+        TodoModel entity = new TodoModel();
         entity.setId(123L);
         entity.setTitle("test title");
         entity.setOrder(0L);
         entity.setCompleted(false);
-        Optional<TodoEntity> optional =  Optional.of(entity);
+        Optional<TodoModel> optional =  Optional.of(entity);
 
         given(this.todoRepository.findById(anyLong()))
                 .willReturn(optional);
 
-        TodoEntity actual = this.todoService.searchById(123L);
-        TodoEntity expected = optional.get();
+        TodoModel actual = this.todoService.searchById(123L);
+        TodoModel expected = optional.get();
 
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getTitle(), actual.getTitle());
